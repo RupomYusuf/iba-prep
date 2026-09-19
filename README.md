@@ -31,6 +31,9 @@ An interactive, frontend-only web app for preparing for the **IBA MBA entrance e
 
 All progress is stored locally in your browser (localStorage) — nothing leaves your device.
 
+## Re-deploying
+After code changes: `npm run deploy` (builds and force-pushes `dist/` to the `gh-pages` branch — GitHub Pages serves it automatically).
+
 ## Tech Stack
 React 19 · Vite 8 · Tailwind CSS 4 · pdfjs-dist (PDF text extraction) · Recharts (analytics) · localStorage (persistence)
 
