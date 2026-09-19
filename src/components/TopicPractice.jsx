@@ -16,10 +16,16 @@ export default function TopicPractice({ onStartSet, onReviewWeak }) {
   const [error, setError] = useState(null)
   const [stats, _] = useState(() => getTopicStats())
   const [profile, setProfile] = useState(() => getSettings().profile || 'iba')
+  const [setSize, setSetSize] = useState(() => getSettings().setSize || '16')
 
   function chooseProfile(key) {
     setProfile(key)
     saveSettings({ profile: key })
+  }
+
+  function chooseSize(key) {
+    setSetSize(key)
+    saveSettings({ setSize: key })
   }
 
   const activeProfile = DIFFICULTY_PROFILES[profile]
@@ -82,6 +88,47 @@ export default function TopicPractice({ onStartSet, onReviewWeak }) {
         </div>
       </Card>
 
+      {/* set size choice */}
+      <Card className="p-5">
+        <h2 className="text-sm font-semibold text-slate-700">Set size</h2>
+        <p className="mt-0.5 text-xs text-slate-400">
+          Full marathon serves EVERY question allowed by your difficulty level — finish it and you&apos;ve
+          covered the whole topic.
+        </p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <button
+            onClick={() => chooseSize('16')}
+            className={`rounded-xl border-2 px-4 py-3 text-left transition-colors ${
+              setSize === '16'
+                ? 'border-indigo-500 bg-indigo-50'
+                : 'border-slate-200 bg-white hover:border-indigo-300'
+            }`}
+          >
+            <span className="text-sm font-semibold text-slate-800">Standard set — 16 questions</span>
+            <p className="mt-1 text-xs leading-relaxed text-slate-500">
+              A quick daily set, weighted to what you haven&apos;t seen yet.
+            </p>
+          </button>
+          <button
+            onClick={() => chooseSize('all')}
+            className={`rounded-xl border-2 px-4 py-3 text-left transition-colors ${
+              setSize === 'all'
+                ? 'border-indigo-500 bg-indigo-50'
+                : 'border-slate-200 bg-white hover:border-indigo-300'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold text-slate-800">🏃 Full marathon</span>
+              <Badge color="green">Complete coverage</Badge>
+            </div>
+            <p className="mt-1 text-xs leading-relaxed text-slate-500">
+              Every bank question + every question type in the topic. Reach 100% coverage and the topic
+              holds no surprises.
+            </p>
+          </button>
+        </div>
+      </Card>
+
       {/* PDF upload */}
       <Card className="p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -136,7 +183,7 @@ export default function TopicPractice({ onStartSet, onReviewWeak }) {
                       <Button
                         variant="primary"
                         className="!px-3 !py-1.5 text-xs"
-                        onClick={() => onStartSet(d.topic, profile)}
+                        onClick={() => onStartSet(d.topic, profile, setSize)}
                       >
                         Practice {d.topic}
                       </Button>
@@ -190,10 +237,15 @@ export default function TopicPractice({ onStartSet, onReviewWeak }) {
                     <span className="tnum">{s.attempted > 0 ? `${s.mastery}%` : '—'}</span>
                   </div>
                   <ProgressBar value={s.mastery} color={TOPIC_META[topic].color} />
+                  <div className="mt-2 mb-1 flex justify-between text-xs text-slate-500">
+                    <span>Coverage</span>
+                    <span className="tnum">{s.coverageDone}/{s.coverageTotal} ({s.coveragePct}%)</span>
+                  </div>
+                  <ProgressBar value={s.coveragePct} color="#94a3b8" height={5} />
                 </div>
                 <div className="mt-4 flex gap-2">
-                  <Button className="flex-1 !py-2" onClick={() => onStartSet(topic, profile)}>
-                    Practice set
+                  <Button className="flex-1 !py-2" onClick={() => onStartSet(topic, profile, setSize)}>
+                    {setSize === 'all' ? '🏃 Full marathon' : 'Practice set'}
                   </Button>
                   {s.attempted > 0 && s.mastery < 70 && (
                     <Button variant="secondary" className="!py-2" onClick={() => onReviewWeak(topic)}>

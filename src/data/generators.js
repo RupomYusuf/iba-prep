@@ -597,3 +597,10 @@ export const GENERATORS = [
 
 // template → topic (for crediting practice stats on generated instances)
 export const TEMPLATE_TOPIC = Object.fromEntries(GENERATORS.map((g) => [g().templateId, g().topic]))
+
+// distinct generator templates per topic — the 'question types' of the syllabus
+export const TEMPLATE_TOTALS = GENERATORS.reduce((acc, g) => {
+  const t = g()
+  acc[t.topic] = (acc[t.topic] || 0) + 1
+  return acc
+}, {})

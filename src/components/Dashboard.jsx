@@ -107,7 +107,7 @@ export default function Dashboard({ onNavigate, onReviewWeak }) {
                   <ProgressBar value={t.mastery} color={TOPIC_META[t.topic].color} height={6} />
                 </div>
                 <span className="w-40 shrink-0 text-xs text-slate-500 tnum">
-                  {t.attempted}/{t.total} attempted · {t.firstTryPct}% 1st try
+                  {t.coverageDone}/{t.coverageTotal} covered · {t.firstTryPct}% 1st try
                 </span>
                 <Badge
                   color={

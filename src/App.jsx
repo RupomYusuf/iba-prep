@@ -16,8 +16,8 @@ export default function App() {
   const [view, setView] = useState('dashboard')
   const [session, setSession] = useState(null) // { topic, questions } or { weakTopic }
 
-  function startSet(topic, profile = 'iba') {
-    setSession({ topic, questions: buildPracticeSet(topic, 16, Date.now(), profile) })
+  function startSet(topic, profile = 'iba', size = '16') {
+    setSession({ topic, questions: buildPracticeSet(topic, size === 'all' ? 'all' : 16, Date.now(), profile) })
     setView('runner')
   }
 

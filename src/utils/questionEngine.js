@@ -68,7 +68,28 @@ export const DIFFICULTY_PROFILES = {
   },
 }
 
+// Full-topic marathon: EVERY bank question allowed by the profile plus one
+// instance of every generator template. Completing it = full topic coverage.
+function buildMarathon(topic, seed, profileKey) {
+  const rng = makeRng(seed)
+  const mix = DIFFICULTY_PROFILES[profileKey]?.mix || DIFFICULTY_PROFILES.iba.mix
+  const pool = questionsByTopic(topic)
+  // profile gates which difficulties belong in the set (IBA Standard → no easies)
+  const bankAllowed = pool.filter((q) => mix[q.difficulty] > 0)
+  const templates = GENERATORS.filter((g) => {
+    const t = g()
+    return t.topic === topic && mix[t.difficulty] > 0
+  })
+  const picked = [...bankAllowed]
+  for (const gen of templates) picked.push(gen(Math.floor(rng() * 2 ** 31)))
+
+  const rank = { easy: 0, medium: 1, hard: 2 }
+  picked.sort((a, b) => rank[a.difficulty] - rank[b.difficulty])
+  return picked.map((q) => shuffleOptions(q, rng))
+}
+
 export function buildPracticeSet(topic, count = 16, seed = Date.now(), profileKey = 'iba') {
+  if (count === 'all') return buildMarathon(topic, seed, profileKey)
   const rng = makeRng(seed)
   let pool = questionsByTopic(topic)
   if (pool.length === 0) return []

@@ -2,7 +2,7 @@
 
 import { getPractice, getFlags, getMocks } from './storage'
 import { ALL_QUESTIONS, TOPICS, questionsByTopic } from '../data/questions'
-import { TEMPLATE_TOPIC } from '../data/generators'
+import { TEMPLATE_TOPIC, TEMPLATE_TOTALS } from '../data/generators'
 
 export const MARKING = { correct: 1, wrong: -0.25, blank: 0 }
 
@@ -57,7 +57,12 @@ export function getTopicStats() {
     stats[topic] = {
       topic,
       total: questionsByTopic(topic).length,
-      attempted: 0,
+      totalExamLevel: questionsByTopic(topic).filter((q) => q.difficulty !== 'easy').length,
+      templatesTotal: TEMPLATE_TOTALS[topic] || 0,
+      attempted: 0, // instances (bank + generated) — mastery denominator
+      bankAttempted: 0,
+      bankCovered: 0, // non-easy bank questions attempted — counts toward coverage
+      genTemplatesDone: 0, // distinct generator types practiced
       firstTryCorrect: 0,
       solved: 0, // correct on either attempt
       masteryPoints: 0,
@@ -69,6 +74,8 @@ export function getTopicStats() {
     if (!rec || rec.attempts.length === 0) continue
     const s = stats[q.topic]
     s.attempted++
+    s.bankAttempted++
+    if (q.difficulty !== 'easy') s.bankCovered++
     const m = masteryFromAttempts(rec.attempts, q.options[q.answer])
     if (m == null) continue
     s.masteryPoints += m
@@ -77,6 +84,7 @@ export function getTopicStats() {
   }
   // generated questions: each instance id is "gen-<template>:<seed>:<n>" —
   // credit its attempts to the template's topic as well
+  const genSeenTemplates = {} // topic -> Set of templateIds
   for (const [qid, rec] of Object.entries(practice)) {
     if (!qid.startsWith('gen-') || !rec || rec.attempts.length === 0) continue
     const templateId = qid.split(':')[0]
@@ -84,6 +92,7 @@ export function getTopicStats() {
     if (!topic || !stats[topic]) continue
     const s = stats[topic]
     s.attempted++
+    ;(genSeenTemplates[topic] ||= new Set()).add(templateId)
     // generated instances repeat inside a template: use the stored correct text
     const m = masteryFromAttempts(rec.attempts, rec.correct)
     if (m == null) continue
@@ -93,6 +102,11 @@ export function getTopicStats() {
   }
   for (const topic of TOPICS) {
     const s = stats[topic]
+    s.genTemplatesDone = genSeenTemplates[topic]?.size || 0
+    s.coverageDone = s.bankCovered + s.genTemplatesDone
+    s.coverageTotal = s.totalExamLevel + s.templatesTotal
+    s.coveragePct =
+      s.coverageTotal > 0 ? Math.round((s.coverageDone / s.coverageTotal) * 100) : 0
     s.mastery = s.attempted > 0 ? Math.round((s.masteryPoints / s.attempted) * 100) : 0
     s.firstTryPct = s.attempted > 0 ? Math.round((s.firstTryCorrect / s.attempted) * 100) : 0
     s.status = masteryStatus(s.mastery)

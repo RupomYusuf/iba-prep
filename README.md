@@ -15,6 +15,8 @@ An interactive, frontend-only web app for preparing for the **IBA MBA entrance e
   - **Foundation** — 50% easy · 30% medium · 20% hard for building basics
 - **2 attempts per question**: attempt 1 shows right/wrong only; attempt 2 unlocks the full worked solution — correct answer, explanation, key concepts, and the common mistake.
 - **No timer** in practice mode; full attempt history per question.
+- **Set size is your choice:** a quick 16-question set, or a **🏃 Full Topic Marathon** that serves EVERY IBA/GMAT-level question in the topic (whole curated pool + every generated question type) — finish it and nothing in that topic can surprise you.
+- **Coverage tracker** per topic ("18/25 covered") alongside mastery, so you can drive every topic to 100%.
 - Questions flagged automatically for weak topics; **topic mastery %** tracked (1st-try correct = 100%, 2nd-try = 50%).
 - **Weak-question drills**: rebuild a set from your flagged/missed questions.
 
