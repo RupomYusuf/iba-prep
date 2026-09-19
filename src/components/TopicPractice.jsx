@@ -5,7 +5,8 @@ import { useState } from 'react'
 import { TOPICS, TOPIC_META } from '../data/questions'
 import { getTopicStats } from '../utils/scorer'
 import { analyzePdf } from '../utils/pdfParser'
-import { saveSettings } from '../utils/storage'
+import { DIFFICULTY_PROFILES } from '../utils/questionEngine'
+import { getSettings, saveSettings } from '../utils/storage'
 import { Badge, Button, Card, ProgressBar, EmptyState } from './ui'
 
 export default function TopicPractice({ onStartSet, onReviewWeak }) {
@@ -14,6 +15,14 @@ export default function TopicPractice({ onStartSet, onReviewWeak }) {
   const [analysis, setAnalysis] = useState(null)
   const [error, setError] = useState(null)
   const [stats, _] = useState(() => getTopicStats())
+  const [profile, setProfile] = useState(() => getSettings().profile || 'iba')
+
+  function chooseProfile(key) {
+    setProfile(key)
+    saveSettings({ profile: key })
+  }
+
+  const activeProfile = DIFFICULTY_PROFILES[profile]
 
   async function handleFile(e) {
     const file = e.target.files?.[0]
@@ -44,9 +53,34 @@ export default function TopicPractice({ onStartSet, onReviewWeak }) {
         <h1 className="text-2xl font-bold text-slate-800">Tier 1 — Topic Practice</h1>
         <p className="mt-1 text-sm text-slate-500">
           Master each topic before full mocks. Every set: 16 questions at IBA / GMAT 650+ standard,
-          30% easy · 40% medium · 30% hard, with two attempts and full explanations.
+          with two attempts and full explanations.
         </p>
       </header>
+
+      {/* difficulty profile choice */}
+      <Card className="p-5">
+        <h2 className="text-sm font-semibold text-slate-700">Difficulty level</h2>
+        <p className="mt-0.5 text-xs text-slate-400">IBA doesn&apos;t do easy questions — the default mirrors the real paper.</p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-3">
+          {Object.entries(DIFFICULTY_PROFILES).map(([key, p]) => (
+            <button
+              key={key}
+              onClick={() => chooseProfile(key)}
+              className={`rounded-xl border-2 px-4 py-3 text-left transition-colors ${
+                profile === key
+                  ? 'border-indigo-500 bg-indigo-50'
+                  : 'border-slate-200 bg-white hover:border-indigo-300'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-slate-800">{p.label}</span>
+                {key === 'iba' && <Badge color="indigo">Recommended</Badge>}
+              </div>
+              <p className="mt-1 text-xs leading-relaxed text-slate-500">{p.desc}</p>
+            </button>
+          ))}
+        </div>
+      </Card>
 
       {/* PDF upload */}
       <Card className="p-6">
@@ -102,7 +136,7 @@ export default function TopicPractice({ onStartSet, onReviewWeak }) {
                       <Button
                         variant="primary"
                         className="!px-3 !py-1.5 text-xs"
-                        onClick={() => onStartSet(d.topic)}
+                        onClick={() => onStartSet(d.topic, profile)}
                       >
                         Practice {d.topic}
                       </Button>
@@ -158,7 +192,7 @@ export default function TopicPractice({ onStartSet, onReviewWeak }) {
                   <ProgressBar value={s.mastery} color={TOPIC_META[topic].color} />
                 </div>
                 <div className="mt-4 flex gap-2">
-                  <Button className="flex-1 !py-2" onClick={() => onStartSet(topic)}>
+                  <Button className="flex-1 !py-2" onClick={() => onStartSet(topic, profile)}>
                     Practice set
                   </Button>
                   {s.attempted > 0 && s.mastery < 70 && (

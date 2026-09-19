@@ -8,8 +8,11 @@ An interactive, frontend-only web app for preparing for the **IBA MBA entrance e
 
 ### Tier 1 — Topic Practice (Topic Mastery)
 - **Capstone PDF upload**: the analyzer extracts lecture text (pdf.js) and detects which of the 6 topics your lecture covers — start a practice set straight from the analysis.
-- 16-question practice sets per topic from a curated **156-question bank** (Algebra, Arithmetic, Geometry, Word Problems, Set Theory, Probability — 26 questions each).
-- Difficulty distribution per set: **30% easy · 40% medium · 30% hard** (IBA standard + GMAT 650+).
+- 16-question practice sets per topic from a curated **168-question bank** (Algebra, Arithmetic, Geometry, Word Problems, Set Theory, Probability — 28 questions each, weighted toward tricky mediums).
+- **Difficulty profiles you choose per set:**
+  - **IBA Standard (default)** — no easy questions; tricky mediums & hard only, mirroring the real paper
+  - **Balanced** — 30% easy · 40% medium · 30% hard
+  - **Foundation** — 50% easy · 30% medium · 20% hard for building basics
 - **2 attempts per question**: attempt 1 shows right/wrong only; attempt 2 unlocks the full worked solution — correct answer, explanation, key concepts, and the common mistake.
 - **No timer** in practice mode; full attempt history per question.
 - Questions flagged automatically for weak topics; **topic mastery %** tracked (1st-try correct = 100%, 2nd-try = 50%).
@@ -17,7 +20,7 @@ An interactive, frontend-only web app for preparing for the **IBA MBA entrance e
 
 ### Tier 2 — Full Mock Exams
 - **Real Exam Pace**: 30 questions · 30 minutes (60 s/Q) or **Speedrun**: 30 questions · 25 minutes (50 s/Q).
-- All 30 questions mixed across topics (like the real paper), difficulty progressive: Q1–10 easier, Q11–25 medium, Q26–30 harder.
+- All 30 questions mixed across topics (like the real paper) — **every question is IBA / GMAT 650+ standard: tricky mediums and hards only, zero easy fillers** (Q26–30 are the hardest).
 - Live **MM:SS countdown** with auto-submit at 0:00, question palette, flagging, and answer changes.
 - **Exact IBA negative marking**: +1 correct · −0.25 wrong · 0 blank.
 - Answer key & explanations unlock **only after submission**.
@@ -50,7 +53,7 @@ This repo ships with a GitHub Actions workflow (`.github/workflows/deploy.yml`).
 3. Every push to `main` rebuilds and deploys automatically.
 
 ## Question Bank
-156 original questions written to IBA / GMAT 650+ standard with unambiguous answers, realistic distractors, no trick wording, and concept-teaching explanations. Each question carries its topic, subtopic, difficulty, key concepts, and common mistake — all solvable inside 60 seconds.
+168 original questions written to IBA / GMAT 650+ standard with unambiguous answers, realistic distractors, no trick wording, and concept-teaching explanations. Each question carries its topic, subtopic, difficulty, key concepts, and common mistake — all solvable inside 60 seconds.
 
 ## Resetting Progress
 Progress lives in `localStorage` under the `iba-prep:v1:*` keys — clear site data in your browser to start fresh.

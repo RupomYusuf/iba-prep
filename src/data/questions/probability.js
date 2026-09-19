@@ -150,6 +150,46 @@ export const questions = [
     mistake: 'Counting only one suit (2/52) or adding 4/13 twice.',
   },
 
+  {
+    "id": "pro-m11",
+    "topic": "Probability",
+    "subtopic": "Dice Problems",
+    "difficulty": "medium",
+    "q": "Two fair dice are rolled. What is the probability that the product of the two numbers is even?",
+    "options": [
+      "1/4",
+      "1/2",
+      "2/3",
+      "3/4"
+    ],
+    "answer": 3,
+    "explanation": "The product is odd only if BOTH dice are odd: (3/6) × (3/6) = 9/36 = 1/4. So P(even) = 1 − 1/4 = 3/4.",
+    "concepts": [
+      "Complement rule",
+      "Independence"
+    ],
+    "mistake": "Answering 1/2 by reasoning about sums instead of the product."
+  },
+  {
+    "id": "pro-m12",
+    "topic": "Probability",
+    "subtopic": "Coin Problems",
+    "difficulty": "medium",
+    "q": "A fair coin is tossed 4 times. What is the probability of getting exactly 3 heads?",
+    "options": [
+      "1/16",
+      "1/4",
+      "3/8",
+      "1/2"
+    ],
+    "answer": 1,
+    "explanation": "Favorable sequences: HHHT, HHTH, HTHH, THHH → C(4,3) = 4 of 16 outcomes → 4/16 = 1/4.",
+    "concepts": [
+      "Binomial probability C(n,k)(1/2)ⁿ"
+    ],
+    "mistake": "Answering 3/8 (the 3-toss answer for exactly 2 heads) or 1/2."
+  },
+
   // ---------- HARD ----------
   {
     id: 'pro-h1', topic: 'Probability', subtopic: 'At Least One', difficulty: 'hard',

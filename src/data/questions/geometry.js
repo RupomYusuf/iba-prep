@@ -150,6 +150,45 @@ export const questions = [
     mistake: 'Multiplying the two bases first: ½ × 10 × 6 × 4.',
   },
 
+  {
+    "id": "geo-m11",
+    "topic": "Geometry",
+    "subtopic": "Circles",
+    "difficulty": "medium",
+    "q": "The area of a circle is 49π. What is its circumference?",
+    "options": [
+      "7π",
+      "14π",
+      "28π",
+      "49π"
+    ],
+    "answer": 1,
+    "explanation": "πr² = 49π → r = 7. Circumference = 2πr = 14π.",
+    "concepts": [
+      "Working backwards from area to radius"
+    ],
+    "mistake": "Answering 49π (the area) or 28π (forgetting the ½ in r = √(A/π))."
+  },
+  {
+    "id": "geo-m12",
+    "topic": "Geometry",
+    "subtopic": "Angles",
+    "difficulty": "medium",
+    "q": "An exterior angle of a triangle measures 110°, and one of its two opposite interior angles is 60°. What is the other opposite interior angle?",
+    "options": [
+      "50°",
+      "55°",
+      "70°",
+      "110°"
+    ],
+    "answer": 0,
+    "explanation": "An exterior angle equals the sum of the two opposite interior angles: 110° = 60° + x → x = 50°.",
+    "concepts": [
+      "Exterior angle theorem"
+    ],
+    "mistake": "Computing 180° − 110° = 70° (the adjacent interior angle, not the opposite one)."
+  },
+
   // ---------- HARD ----------
   {
     id: 'geo-h1', topic: 'Geometry', subtopic: 'Triangles', difficulty: 'hard',

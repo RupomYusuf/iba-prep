@@ -131,7 +131,7 @@ export default function MockExam({ onExit }) {
         <header>
           <h1 className="text-2xl font-bold text-slate-800">Tier 2 — Full Mock Exam</h1>
           <p className="mt-1 text-sm text-slate-500">
-            30 questions mixed across all topics (like the real IBA paper), negative marking
+            30 questions mixed across all topics (like the real IBA paper) — every one medium-hard IBA / GMAT 650+ standard, negative marking
             (+1 correct, −0.25 wrong, 0 blank). Answers and explanations unlock after submission.
           </p>
         </header>
@@ -162,7 +162,7 @@ export default function MockExam({ onExit }) {
         <Card className="p-5">
           <h3 className="text-sm font-semibold text-slate-700">Rules</h3>
           <ul className="mt-2 space-y-1 text-sm text-slate-500">
-            <li>• Difficulty is progressive: Q1–10 easier, Q11–25 medium, Q26–30 harder.</li>
+            <li>• Every question is IBA / GMAT 650+ standard — no easy fillers. Q1–25 are tricky mediums, Q26–30 are the hardest.</li>
             <li>• Flag questions to revisit; change answers any time before submitting.</li>
             <li>• The exam auto-submits when the timer hits 0:00.</li>
             <li>• Scoring: +1 per correct, −0.25 per wrong, 0 for blank — exactly like IBA.</li>

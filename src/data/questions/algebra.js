@@ -150,6 +150,47 @@ export const questions = [
     mistake: 'Assuming a parabola hits a horizontal line only once.',
   },
 
+  {
+    "id": "alg-m11",
+    "topic": "Algebra",
+    "subtopic": "Inequalities",
+    "difficulty": "medium",
+    "q": "For how many integers x is x² + 6x ≤ 0?",
+    "options": [
+      "5",
+      "6",
+      "7",
+      "13"
+    ],
+    "answer": 2,
+    "explanation": "Factor: x(x + 6) ≤ 0. The product is negative or zero between the roots, so −6 ≤ x ≤ 0. Integers: −6, −5, −4, −3, −2, −1, 0 → 7 integers.",
+    "concepts": [
+      "Solving quadratic inequalities by sign analysis",
+      "Counting integers in a closed interval"
+    ],
+    "mistake": "Writing x < 0 only (missing −6 ≤ x) or counting −6 to 0 as 6 integers."
+  },
+  {
+    "id": "alg-m12",
+    "topic": "Algebra",
+    "subtopic": "Exponents",
+    "difficulty": "medium",
+    "q": "If 2^(a+b) = 64 and 2^(a−b) = 4, what is ab?",
+    "options": [
+      "6",
+      "8",
+      "12",
+      "16"
+    ],
+    "answer": 1,
+    "explanation": "64 = 2⁶ and 4 = 2², so a + b = 6 and a − b = 2. Adding: a = 4, so b = 2. ab = 8.",
+    "concepts": [
+      "Equating exponents with the same base",
+      "Two-equation systems"
+    ],
+    "mistake": "Computing aᵇ = 4² = 16 instead of the product ab."
+  },
+
   // ---------- HARD ----------
   {
     id: 'alg-h1', topic: 'Algebra', subtopic: 'Systems of Equations', difficulty: 'hard',

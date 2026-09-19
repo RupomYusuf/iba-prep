@@ -150,6 +150,46 @@ export const questions = [
     mistake: 'Using compound logic (doubling is not 100/8 under CI).',
   },
 
+  {
+    "id": "ari-m11",
+    "topic": "Arithmetic",
+    "subtopic": "Percentages",
+    "difficulty": "medium",
+    "q": "The price of a stock rises by 10% and then falls by 10%. Compared to the original price, the final price is:",
+    "options": [
+      "The same",
+      "1% lower",
+      "1% higher",
+      "10% lower"
+    ],
+    "answer": 1,
+    "explanation": "Final = P × 1.10 × 0.90 = 0.99P — exactly 1% below the original. A rise and fall of the same percent never cancel.",
+    "concepts": [
+      "Successive percentage change: multiply factors"
+    ],
+    "mistake": "Assuming the two changes cancel (same price) instead of multiplying 1.1 × 0.9 = 0.99."
+  },
+  {
+    "id": "ari-m12",
+    "topic": "Arithmetic",
+    "subtopic": "Averages",
+    "difficulty": "medium",
+    "q": "What is the average of the first 50 odd numbers?",
+    "options": [
+      "25",
+      "49",
+      "50",
+      "51"
+    ],
+    "answer": 2,
+    "explanation": "The first 50 odd numbers run from 1 to 99. Their average = (1 + 99)/2 = 50. (Sum = 50² = 2500; 2500/50 = 50.)",
+    "concepts": [
+      "Average of an AP = mean of first and last terms",
+      "Sum of first n odd numbers = n²"
+    ],
+    "mistake": "Halving the count (50/2 = 25) or landing one off at 49/51."
+  },
+
   // ---------- HARD ----------
   {
     id: 'ari-h1', topic: 'Arithmetic', subtopic: 'Speed & Distance', difficulty: 'hard',

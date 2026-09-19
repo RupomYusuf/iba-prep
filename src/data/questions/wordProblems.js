@@ -150,6 +150,46 @@ export const questions = [
     mistake: 'Ignoring the hour hand\'s half-degree per minute drift.',
   },
 
+  {
+    "id": "wrd-m11",
+    "topic": "Word Problems",
+    "subtopic": "Age Problems",
+    "difficulty": "medium",
+    "q": "A father is four times as old as his son. In 20 years, he will be twice as old as his son. How old is the son now?",
+    "options": [
+      "8",
+      "10",
+      "12",
+      "20"
+    ],
+    "answer": 1,
+    "explanation": "Let the son be s. 4s + 20 = 2(s + 20) → 4s + 20 = 2s + 40 → 2s = 20 → s = 10 (father 40, and 60 = 2 × 30 checks out).",
+    "concepts": [
+      "Age problems across a time shift"
+    ],
+    "mistake": "Forgetting the +20 applies to BOTH ages, or answering the father's age (40)."
+  },
+  {
+    "id": "wrd-m12",
+    "topic": "Word Problems",
+    "subtopic": "Profit & Loss",
+    "difficulty": "medium",
+    "q": "A trader sells an item for Tk 720 at a 10% loss. At what price should he sell it to make a 15% profit?",
+    "options": [
+      "Tk 828",
+      "Tk 900",
+      "Tk 920",
+      "Tk 960"
+    ],
+    "answer": 2,
+    "explanation": "CP = 720/0.9 = Tk 800. For 15% profit: SP = 800 × 1.15 = Tk 920.",
+    "concepts": [
+      "Recovering cost price from a loss",
+      "Two-step profit problems"
+    ],
+    "mistake": "Applying +15% to the selling price: 720 × 1.15 = 828."
+  },
+
   // ---------- HARD ----------
   {
     id: 'wrd-h1', topic: 'Word Problems', subtopic: 'Work & Time', difficulty: 'hard',

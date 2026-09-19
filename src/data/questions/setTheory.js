@@ -150,6 +150,47 @@ export const questions = [
     mistake: 'Computing 2⁴ = 16 (all subsets, not just those containing a).',
   },
 
+  {
+    "id": "set-m11",
+    "topic": "Set Theory",
+    "subtopic": "Two-Set Venn",
+    "difficulty": "medium",
+    "q": "In a survey, 40% of people like tea, 50% like coffee and 20% like both. What percent like neither?",
+    "options": [
+      "10%",
+      "20%",
+      "30%",
+      "70%"
+    ],
+    "answer": 2,
+    "explanation": "At least one = 40 + 50 − 20 = 70%. Neither = 100 − 70 = 30%.",
+    "concepts": [
+      "Inclusion–exclusion with percentages",
+      "Complement of a union"
+    ],
+    "mistake": "Answering 10% (adding 40 + 50 and subtracting too much) or 20% (the both-overlap)."
+  },
+  {
+    "id": "set-m12",
+    "topic": "Set Theory",
+    "subtopic": "Subsets & Power Sets",
+    "difficulty": "medium",
+    "q": "A set has 4 elements. How many of its subsets contain an odd number of elements?",
+    "options": [
+      "4",
+      "8",
+      "10",
+      "12"
+    ],
+    "answer": 1,
+    "explanation": "Odd sizes: 1 or 3 elements → C(4,1) + C(4,3) = 4 + 4 = 8. (Exactly half of all 2⁴ = 16 subsets.)",
+    "concepts": [
+      "Counting subsets by size with combinations",
+      "Half of all subsets have odd size"
+    ],
+    "mistake": "Counting only the 4 single-element subsets."
+  },
+
   // ---------- HARD ----------
   {
     id: 'set-h1', topic: 'Set Theory', subtopic: 'Three-Set Venn', difficulty: 'hard',

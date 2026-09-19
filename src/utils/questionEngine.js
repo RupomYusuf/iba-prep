@@ -45,22 +45,40 @@ function pickByDifficulty(pool, difficulty, count, rng) {
 }
 
 // ---------- Tier 1: topic practice ----------
-// difficulty distribution target: 30% easy, 40% medium, 30% hard
+// Difficulty profiles — IBA doesn't do easy questions; default is exam-realistic.
 
-export function buildPracticeSet(topic, count = 16, seed = Date.now()) {
+export const DIFFICULTY_PROFILES = {
+  iba: {
+    label: 'IBA Standard',
+    desc: 'No easy questions — tricky mediums & hard only. Closest to the real exam.',
+    mix: { easy: 0, medium: 0.5, hard: 0.5 },
+  },
+  balanced: {
+    label: 'Balanced',
+    desc: '30% easy · 40% medium · 30% hard — even mix across levels.',
+    mix: { easy: 0.3, medium: 0.4, hard: 0.3 },
+  },
+  foundation: {
+    label: 'Foundation',
+    desc: 'Build basics first — 50% easy · 30% medium · 20% hard.',
+    mix: { easy: 0.5, medium: 0.3, hard: 0.2 },
+  },
+}
+
+export function buildPracticeSet(topic, count = 16, seed = Date.now(), profileKey = 'iba') {
   const rng = makeRng(seed)
   let pool = questionsByTopic(topic)
   if (pool.length === 0) return []
+  const mix = DIFFICULTY_PROFILES[profileKey]?.mix || DIFFICULTY_PROFILES.iba.mix
 
-  const nEasy = Math.max(1, Math.round(count * 0.3))
-  const nHard = Math.max(1, Math.round(count * 0.3))
-  const nMedium = Math.max(1, count - nEasy - nHard)
+  const nEasy = Math.round(count * mix.easy)
+  const nHard = Math.round(count * mix.hard)
+  const nMedium = count - nEasy - nHard // absorbs rounding remainder
 
-  let picked = [
-    ...pickByDifficulty(pool, 'easy', Math.min(nEasy, count), rng),
-    ...pickByDifficulty(pool, 'medium', nMedium, rng),
-    ...pickByDifficulty(pool, 'hard', nHard, rng),
-  ]
+  let picked = []
+  if (nEasy > 0) picked.push(...pickByDifficulty(pool, 'easy', nEasy, rng))
+  if (nMedium > 0) picked.push(...pickByDifficulty(pool, 'medium', nMedium, rng))
+  if (nHard > 0) picked.push(...pickByDifficulty(pool, 'hard', nHard, rng))
   // dedupe (in case topping up overlapped)
   const seen = new Set()
   picked = picked.filter((q) => (seen.has(q.id) ? false : (seen.add(q.id), true)))
@@ -74,17 +92,15 @@ export function buildPracticeSet(topic, count = 16, seed = Date.now()) {
 }
 
 // ---------- Tier 2: mock exam ----------
-// 30 questions mixed across all topics, progressive difficulty:
-// Q1-10 easier, Q11-25 medium, Q26-30 harder
+// Every mock question is IBA / GMAT 650+ standard: medium & hard only, no easy
+// fillers. Progressive feel: Q1-25 standard mediums, Q26-30 the hardest.
 
 export function buildMockSet(seed = Date.now(), count = 30) {
   const rng = makeRng(seed)
-  const nEasy = 10
-  const nMedium = 15
-  const nHard = count - nEasy - nMedium // 5
+  const nMedium = 20
+  const nHard = count - nMedium // 5-10 hardest close the paper
 
   const picked = [
-    ...pickByDifficulty(ALL_QUESTIONS, 'easy', nEasy, rng),
     ...pickByDifficulty(ALL_QUESTIONS, 'medium', nMedium, rng),
     ...pickByDifficulty(ALL_QUESTIONS, 'hard', nHard, rng),
   ]
