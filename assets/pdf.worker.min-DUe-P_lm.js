@@ -1,0 +1,1 @@
+var e=`/iba-prep/assets/pdf.worker.min-Dswkl-cV.mjs`;export{e as default};
