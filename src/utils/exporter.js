@@ -47,7 +47,7 @@ export function exportProgressCsv() {
       q.id,
       q.topic,
       q.difficulty,
-      `"${rec.attempts.map((a) => 'ABCD'[a]).join(',')}"`,
+      `"${rec.attempts.join('' | '')}"`,
       m === 1 ? 'First-attempt correct' : m === 0.5 ? 'Second-attempt correct' : 'Incorrect',
       flags[q.id] ? 'Yes' : '',
     ])

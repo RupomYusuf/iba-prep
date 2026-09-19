@@ -196,7 +196,7 @@ export default function MockResults({ record, onExit, onRetake }) {
           <h2 className="text-lg font-bold text-slate-800">📋 Answer Key & Explanations</h2>
           {result.perQuestion.map((pq, i) => {
             const q = getQuestion(pq.id)
-            const yours = record.answers[i]
+            const yours = record.answers[i] // selected option text (or null)
             const icon = pq.result === 'correct' ? '✅' : pq.result === 'wrong' ? '❌' : '⬜'
             return (
               <Card key={pq.id} className="p-5">
@@ -217,14 +217,14 @@ export default function MockResults({ record, onExit, onRetake }) {
                       className={`rounded-lg px-3 py-1.5 ${
                         oi === q.answer
                           ? 'bg-emerald-50 font-medium text-emerald-800'
-                          : oi === yours
+                          : opt === yours
                             ? 'bg-red-50 text-red-700'
                             : 'text-slate-600'
                       }`}
                     >
                       {LETTERS[oi]}. {opt}
                       {oi === q.answer && <span className="ml-2">✓ correct</span>}
-                      {oi === yours && oi !== q.answer && <span className="ml-2">← your answer</span>}
+                      {opt === yours && oi !== q.answer && <span className="ml-2">← your answer</span>}
                     </div>
                   ))}
                 </div>

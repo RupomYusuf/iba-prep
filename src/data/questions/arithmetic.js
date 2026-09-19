@@ -39,7 +39,7 @@ export const questions = [
     id: 'ari-e5', topic: 'Arithmetic', subtopic: 'Percentages', difficulty: 'easy',
     q: '15 is what percent of 60?',
     options: ['15%', '25%', '40%', '45%'], answer: 1,
-    explanation: '15/60 = 0.25 = 25%.',
+    explanation: 'Write it as a fraction: 15/60 = 1/4 = 0.25. As a percent, 0.25 × 100 = 25%.',
     concepts: ['Percent as a ratio'],
     mistake: 'Inverting the fraction: 60/15 = 4 → 400%.',
   },

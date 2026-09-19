@@ -1,9 +1,9 @@
 // Persistence layer — browser localStorage. All state derives from these records.
 
-const PREFIX = 'iba-prep:v1:'
+const PREFIX = 'iba-prep:v2:'  // v2: attempts stored as option text (shuffle-proof)
 
 export const KEYS = {
-  practice: PREFIX + 'practice', // { [questionId]: { attempts: [idx,...], ts } }
+  practice: PREFIX + 'practice', // { [questionId]: { attempts: [optionText,...], ts } }
   flags: PREFIX + 'flags', // { [questionId]: true }
   mocks: PREFIX + 'mocks', // [ mockRecord, ... ]
   settings: PREFIX + 'settings', // { name, lastPdfFile }
@@ -29,17 +29,19 @@ function write(key, value) {
 }
 
 // ---------- practice attempts ----------
-// attempts: array of selected option indices, one per attempt (max 2)
+// attempts: array of selected option TEXTS, one per attempt (max 2).
+// Storing the option text (not the index) keeps history valid even though
+// the engine shuffles option order per session.
 
 export function getPractice() {
   return read(KEYS.practice, {})
 }
 
-export function recordAttempt(questionId, choiceIdx) {
+export function recordAttempt(questionId, optionText) {
   const all = getPractice()
   const rec = all[questionId] || { attempts: [], ts: 0 }
   if (rec.attempts.length < 2) {
-    rec.attempts.push(choiceIdx)
+    rec.attempts.push(optionText)
     rec.ts = Date.now()
     all[questionId] = rec
     write(KEYS.practice, all)

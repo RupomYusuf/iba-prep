@@ -55,7 +55,7 @@ export const questions = [
     id: 'set-e7', topic: 'Set Theory', subtopic: 'Union & Intersection', difficulty: 'easy',
     q: 'n(A) = 25, n(B) = 17 and n(A ∩ B) = 6. What is n(A ∪ B)?',
     options: ['31', '36', '42', '48'], answer: 1,
-    explanation: '25 + 17 − 6 = 36.',
+    explanation: 'Apply inclusion–exclusion: n(A ∪ B) = 25 + 17 − 6 = 36. The 6 shared elements are counted twice, so subtract them once.',
     concepts: ['Inclusion–exclusion for two sets'],
     mistake: 'Adding the intersection instead of subtracting (48).',
   },

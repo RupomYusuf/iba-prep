@@ -31,18 +31,27 @@ export default function MockExam({ onExit }) {
   const timerRef = useRef(null)
   const enteredAtRef = useRef(Date.now())
 
+  // refs mirror state so the timer's auto-submit never reads stale closures
+  const answersRef = useRef(answers)
+  const timePerQuestionRef = useRef(timePerQuestion)
+  const secondsLeftRef = useRef(secondsLeft)
+  const currentRef = useRef(current)
+  answersRef.current = answers
+  timePerQuestionRef.current = timePerQuestion
+  secondsLeftRef.current = secondsLeft
+  currentRef.current = current
+
   // ---------- timer ----------
   useEffect(() => {
     if (phase !== 'run') return
     timerRef.current = setInterval(() => {
-      setSecondsLeft((s) => {
-        if (s <= 1) {
-          clearInterval(timerRef.current)
-          submitExam(true)
-          return 0
-        }
-        return s - 1
-      })
+      const next = secondsLeftRef.current - 1
+      secondsLeftRef.current = next
+      setSecondsLeft(Math.max(0, next))
+      if (next <= 0) {
+        clearInterval(timerRef.current)
+        submitExam(true)
+      }
     }, 1000)
     return () => clearInterval(timerRef.current)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -54,7 +63,7 @@ export default function MockExam({ onExit }) {
     enteredAtRef.current = now
     setTimePerQuestion((t) => {
       const copy = [...t]
-      copy[current] = (copy[current] || 0) + spent
+      copy[currentRef.current] = (copy[currentRef.current] || 0) + spent
       return copy
     })
   }
@@ -67,6 +76,7 @@ export default function MockExam({ onExit }) {
     setCurrent(0)
     setTimePerQuestion(new Array(qs.length).fill(0))
     setSecondsLeft(MODES[mode].minutes * 60)
+    secondsLeftRef.current = MODES[mode].minutes * 60
     enteredAtRef.current = Date.now()
     setResult(null)
     setPhase('run')
@@ -74,9 +84,10 @@ export default function MockExam({ onExit }) {
 
   function selectOption(idx) {
     recordTimeSpent()
+    const q = questions[current]
     setAnswers((a) => {
       const copy = [...a]
-      copy[current] = copy[current] === idx ? null : idx // tap again to clear
+      copy[current] = copy[current] === q.options[idx] ? null : q.options[idx] // tap again to clear
       return copy
     })
   }
@@ -93,16 +104,16 @@ export default function MockExam({ onExit }) {
   function submitExam(auto = false) {
     recordTimeSpent()
     clearInterval(timerRef.current)
-    const res = scoreMockAnswers(questions, answers)
-    const timeUsed = MODES[mode].minutes * 60 - secondsLeft
+    const res = scoreMockAnswers(questions, answersRef.current)
+    const timeUsed = MODES[mode].minutes * 60 - secondsLeftRef.current
     const record = {
       id: 'mock-' + Date.now(),
       date: Date.now(),
       mode,
       questionIds: questions.map((q) => q.id),
-      answers,
+      answers: answersRef.current,
       timeUsed,
-      timePerQuestion,
+      timePerQuestion: timePerQuestionRef.current,
       result: res,
       auto,
     }
@@ -239,7 +250,7 @@ export default function MockExam({ onExit }) {
 
         <div className="mt-5 space-y-2.5">
           {q.options.map((opt, i) => {
-            const selected = answers[current] === i
+            const selected = answers[current] === q.options[i]
             let cls =
               'w-full rounded-xl border-2 px-4 py-3 text-left text-sm transition-colors '
             cls += selected

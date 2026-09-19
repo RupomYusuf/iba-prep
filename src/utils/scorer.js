@@ -10,12 +10,12 @@ export function scoreMockAnswers(questions, answers) {
   let wrong = 0
   let blank = 0
   const perQuestion = questions.map((q, i) => {
-    const a = answers[i]
+    const a = answers[i] // selected option TEXT (or null for blank)
     let result // 'correct' | 'wrong' | 'blank'
     if (a == null) {
       result = 'blank'
       blank++
-    } else if (a === q.answer) {
+    } else if (a === q.options[q.answer]) {
       result = 'correct'
       correct++
     } else {
@@ -40,6 +40,8 @@ export function scoreMockAnswers(questions, answers) {
 // ---------- practice / topic mastery ----------
 
 // mastery weight: 1st-attempt correct = 1.0, 2nd-attempt correct = 0.5, else 0
+// attempts are stored as option TEXTS (shuffle-proof), correctAnswer is the
+// correct option's text
 export function masteryFromAttempts(attempts, correctAnswer) {
   if (!attempts || attempts.length === 0) return null
   if (attempts[0] === correctAnswer) return 1
@@ -66,7 +68,7 @@ export function getTopicStats() {
     if (!rec || rec.attempts.length === 0) continue
     const s = stats[q.topic]
     s.attempted++
-    const m = masteryFromAttempts(rec.attempts, q.answer)
+    const m = masteryFromAttempts(rec.attempts, q.options[q.answer])
     if (m == null) continue
     s.masteryPoints += m
     if (m === 1) s.firstTryCorrect++
@@ -103,7 +105,7 @@ export function getWeakQuestions(topic) {
     const rec = practice[q.id]
     if (flags[q.id]) return true
     if (!rec || rec.attempts.length === 0) return false
-    return masteryFromAttempts(rec.attempts, q.answer) === 0
+    return masteryFromAttempts(rec.attempts, q.options[q.answer]) === 0
   })
 }
 
