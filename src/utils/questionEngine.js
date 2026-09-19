@@ -1,8 +1,11 @@
 // Question engine — seeded selection, difficulty distribution, option shuffling.
-// Serves Tier 1 (topic practice, 15-20 Qs at 30/40/30 difficulty) and
-// Tier 2 (mock exams: Q1-10 easier, Q11-25 medium, Q26-30 harder).
+// Questions are DYNAMIC: every set/mock combines freshly generated instances
+// (from parameterized templates in data/generators.js) with curated bank
+// questions, preferring bank questions you haven't seen before.
 
 import { ALL_QUESTIONS, questionsByTopic } from '../data/questions'
+import { GENERATORS } from '../data/generators'
+import { getPractice } from './storage'
 
 // deterministic PRNG (mulberry32)
 export function makeRng(seed) {
@@ -75,20 +78,59 @@ export function buildPracticeSet(topic, count = 16, seed = Date.now(), profileKe
   const nHard = Math.round(count * mix.hard)
   const nMedium = count - nEasy - nHard // absorbs rounding remainder
 
-  let picked = []
-  if (nEasy > 0) picked.push(...pickByDifficulty(pool, 'easy', nEasy, rng))
-  if (nMedium > 0) picked.push(...pickByDifficulty(pool, 'medium', nMedium, rng))
-  if (nHard > 0) picked.push(...pickByDifficulty(pool, 'hard', nHard, rng))
-  // dedupe (in case topping up overlapped)
+  // --- dynamic layer: freshly generated instances (one per template max) ---
+  const seenIds = new Set()
+  const picked = []
+  const want = { easy: nEasy, medium: nMedium, hard: nHard }
+  const genShuffled = shuffle(GENERATORS.filter((g) => g().topic === topic), rng)
+  for (const gen of genShuffled) {
+    const template = gen()
+    if (want[template.difficulty] > 0) {
+      picked.push(gen(Math.floor(rng() * 2 ** 31)))
+      want[template.difficulty]--
+      seenIds.add(template.templateId)
+    }
+  }
+
+  // --- curated layer: bank questions, preferring ones not seen before ---
+  const practice = getPractice()
+  const fresh = pool.filter((q) => !practice[q.id])
+  const used = pool.filter((q) => practice[q.id])
+  for (const group of [fresh, used]) {
+    for (const difficulty of ['easy', 'medium', 'hard']) {
+      if (want[difficulty] <= 0) continue
+      const groupShuffled = shuffle(group.filter((q) => q.difficulty === difficulty), rng)
+      for (const q of groupShuffled) {
+        if (want[difficulty] <= 0) break
+        picked.push(q)
+        want[difficulty]--
+        seenIds.add(q.id)
+      }
+    }
+  }
+
+  // dedupe + trim
   const seen = new Set()
-  picked = picked.filter((q) => (seen.has(q.id) ? false : (seen.add(q.id), true)))
-  picked = picked.slice(0, count)
+  let final = picked.filter((q) => (seen.has(q.id) ? false : (seen.add(q.id), true)))
+  final = final.slice(0, count)
+
+  // if dynamic templates couldn't fill the set (small topic pools), top up with
+  // any remaining generated instances
+  if (final.length < count) {
+    for (const gen of genShuffled) {
+      if (final.length >= count) break
+      const template = gen()
+      if (seenIds.has(template.templateId)) continue
+      final.push(gen(Math.floor(rng() * 2 ** 31)))
+      seenIds.add(template.templateId)
+    }
+  }
 
   // easy → hard within the set, friendlier for learning
   const rank = { easy: 0, medium: 1, hard: 2 }
-  picked.sort((a, b) => rank[a.difficulty] - rank[b.difficulty])
+  final.sort((a, b) => rank[a.difficulty] - rank[b.difficulty])
 
-  return picked.map((q) => shuffleOptions(q, rng))
+  return final.map((q) => shuffleOptions(q, rng))
 }
 
 // ---------- Tier 2: mock exam ----------
@@ -98,14 +140,47 @@ export function buildPracticeSet(topic, count = 16, seed = Date.now(), profileKe
 export function buildMockSet(seed = Date.now(), count = 30) {
   const rng = makeRng(seed)
   const nMedium = 20
-  const nHard = count - nMedium // 5-10 hardest close the paper
+  const nHard = count - nMedium // the hardest questions close the paper
 
-  const picked = [
-    ...pickByDifficulty(ALL_QUESTIONS, 'medium', nMedium, rng),
-    ...pickByDifficulty(ALL_QUESTIONS, 'hard', nHard, rng),
-  ]
+  const picked = []
+  const seenTemplates = new Set()
 
-  // de-dupe in case of top-up overlap
+  // --- dynamic layer: freshly generated instances (one per template) ---
+  const genShuffled = shuffle(GENERATORS, rng)
+  for (const gen of genShuffled) {
+    const template = gen()
+    if (template.difficulty === 'medium' && nMedium > 0) {
+      picked.push(gen(Math.floor(rng() * 2 ** 31)))
+      seenTemplates.add(template.templateId)
+    }
+  }
+  // hards come mostly from the curated bank for exam-grade difficulty
+  const bankMedium = shuffle(ALL_QUESTIONS.filter((q) => q.difficulty === 'medium'), rng)
+  const bankHard = shuffle(ALL_QUESTIONS.filter((q) => q.difficulty === 'hard'), rng)
+  let usedMedium = picked.length
+  for (const q of bankMedium) {
+    if (usedMedium >= nMedium) break
+    picked.push(q)
+    usedMedium++
+  }
+  let usedHard = 0
+  for (const q of bankHard) {
+    if (usedHard >= nHard) break
+    picked.push(q)
+    usedHard++
+  }
+  // top up hards with generated instances if the bank pool ran short
+  if (usedHard < nHard) {
+    for (const gen of genShuffled) {
+      if (usedHard >= nHard) break
+      const template = gen()
+      if (template.difficulty !== 'hard' || seenTemplates.has(template.templateId)) continue
+      picked.push(gen(Math.floor(rng() * 2 ** 31)))
+      usedHard++
+    }
+  }
+
+  // de-dupe (gen instance ids are unique; bank ids could collide only on top-up)
   const seen = new Set()
   const unique = picked.filter((q) => (seen.has(q.id) ? false : (seen.add(q.id), true)))
 

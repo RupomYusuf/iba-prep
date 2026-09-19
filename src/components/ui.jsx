@@ -1,8 +1,12 @@
 // Small shared UI primitives
 
-export function Card({ children, className = '' }) {
+export function Card({ children, className = '', onClick, ...rest }) {
   return (
-    <div className={`rounded-2xl border border-slate-200 bg-white shadow-sm ${className}`}>
+    <div
+      className={`rounded-2xl border border-slate-200 bg-white shadow-sm ${onClick ? 'cursor-pointer' : ''} ${className}`}
+      onClick={onClick}
+      {...rest}
+    >
       {children}
     </div>
   )

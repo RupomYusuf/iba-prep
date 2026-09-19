@@ -31,7 +31,7 @@ export default function PracticeRunner({ topic, questions, onExit }) {
   }, [results])
 
   function submit(choiceIdx) {
-    recordAttempt(q.id, q.options[choiceIdx])
+    recordAttempt(q.id, q.options[choiceIdx], q.options[q.answer])
     const newAttempts = [...attempts, choiceIdx]
     setAttempts(newAttempts)
     if (newAttempts.length === 2) {

@@ -111,6 +111,7 @@ export default function MockExam({ onExit }) {
       date: Date.now(),
       mode,
       questionIds: questions.map((q) => q.id),
+      questions: questions.map((q) => ({ ...q })), // full snapshot (generated questions aren't in the static bank)
       answers: answersRef.current,
       timeUsed,
       timePerQuestion: timePerQuestionRef.current,

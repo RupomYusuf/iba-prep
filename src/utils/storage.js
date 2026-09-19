@@ -37,9 +37,10 @@ export function getPractice() {
   return read(KEYS.practice, {})
 }
 
-export function recordAttempt(questionId, optionText) {
+export function recordAttempt(questionId, optionText, correctText) {
   const all = getPractice()
-  const rec = all[questionId] || { attempts: [], ts: 0 }
+  const rec = all[questionId] || { attempts: [], ts: 0, correct: correctText }
+  if (rec.correct === undefined) rec.correct = correctText
   if (rec.attempts.length < 2) {
     rec.attempts.push(optionText)
     rec.ts = Date.now()

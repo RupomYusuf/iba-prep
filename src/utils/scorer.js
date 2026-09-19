@@ -2,6 +2,7 @@
 
 import { getPractice, getFlags, getMocks } from './storage'
 import { ALL_QUESTIONS, TOPICS, questionsByTopic } from '../data/questions'
+import { TEMPLATE_TOPIC } from '../data/generators'
 
 export const MARKING = { correct: 1, wrong: -0.25, blank: 0 }
 
@@ -69,6 +70,22 @@ export function getTopicStats() {
     const s = stats[q.topic]
     s.attempted++
     const m = masteryFromAttempts(rec.attempts, q.options[q.answer])
+    if (m == null) continue
+    s.masteryPoints += m
+    if (m === 1) s.firstTryCorrect++
+    if (m > 0) s.solved++
+  }
+  // generated questions: each instance id is "gen-<template>:<seed>:<n>" —
+  // credit its attempts to the template's topic as well
+  for (const [qid, rec] of Object.entries(practice)) {
+    if (!qid.startsWith('gen-') || !rec || rec.attempts.length === 0) continue
+    const templateId = qid.split(':')[0]
+    const topic = TEMPLATE_TOPIC[templateId]
+    if (!topic || !stats[topic]) continue
+    const s = stats[topic]
+    s.attempted++
+    // generated instances repeat inside a template: use the stored correct text
+    const m = masteryFromAttempts(rec.attempts, rec.correct)
     if (m == null) continue
     s.masteryPoints += m
     if (m === 1) s.firstTryCorrect++

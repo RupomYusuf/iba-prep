@@ -6,7 +6,6 @@ import {
   PieChart, Pie, Cell, Legend,
 } from 'recharts'
 import { formatTime, MARKING } from '../utils/scorer'
-import { getQuestion } from '../data/questions'
 import { Badge, Button, Card, difficultyColor, ProgressBar, StatCard, topicColor } from './ui'
 
 const LETTERS = ['A', 'B', 'C', 'D']
@@ -195,7 +194,7 @@ export default function MockResults({ record, onExit, onRetake }) {
         <div className="space-y-4">
           <h2 className="text-lg font-bold text-slate-800">📋 Answer Key & Explanations</h2>
           {result.perQuestion.map((pq, i) => {
-            const q = getQuestion(pq.id)
+            const q = record.questions[i]
             const yours = record.answers[i] // selected option text (or null)
             const icon = pq.result === 'correct' ? '✅' : pq.result === 'wrong' ? '❌' : '⬜'
             return (
