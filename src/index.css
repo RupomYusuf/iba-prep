@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-slate-100 text-slate-800 antialiased;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+/* numeric inputs / timer use tabular figures */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
